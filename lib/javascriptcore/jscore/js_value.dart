@@ -177,7 +177,7 @@ class JSValue {
   JSValue(this.context, this.pointer);
 
   /// Creates a JavaScript value of the undefined type.
-  JSValue.makeUndefined(JSContext this.context)
+  JSValue.makeUndefined(this.context)
       : this.pointer = JSValueRef.jSValueMakeUndefined(context.pointer);
 
   /// Creates a JavaScript value of the null type.

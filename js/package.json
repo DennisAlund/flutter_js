@@ -1,0 +1,12 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "automaticEmbedding.js",
+  "scripts": {
+    "run": "node automaticEmbedding.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

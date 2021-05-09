@@ -1,7 +1,6 @@
 import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
-import 'package:flutter/cupertino.dart';
 
 import 'jsc_ffi.dart';
 
@@ -304,8 +303,7 @@ class JSStaticValue extends Struct {
         ..attributes = struct.attributes;
 
   factory JSStaticValue.allocateArray(List<JSStaticValueStruct> structList) {
-    var jSStaticValues =
-        calloc<JSStaticValue>(structList.length + 1).ref;
+    var jSStaticValues = calloc<JSStaticValue>(structList.length + 1).ref;
     for (int index = 0; index < structList.length; index++) {
       jSStaticValues[index].setValue(structList[index]);
     }
@@ -361,8 +359,8 @@ class JSStaticFunction extends Struct {
 
   factory JSStaticFunction.allocate({
     required Pointer<Utf8>? name,
-    required
-        Pointer<NativeFunction<JSObjectCallAsFunctionCallback>>? callAsFunction,
+    required Pointer<NativeFunction<JSObjectCallAsFunctionCallback>>?
+        callAsFunction,
     required int? attributes,
   }) =>
       calloc<JSStaticFunction>().ref
@@ -379,9 +377,7 @@ class JSStaticFunction extends Struct {
 
   factory JSStaticFunction.allocateArray(
       List<JSStaticFunctionStruct> structList) {
-
-    var jSStaticFunctions =
-        calloc<JSStaticFunction>(structList.length + 1).ref;
+    var jSStaticFunctions = calloc<JSStaticFunction>(structList.length + 1).ref;
     for (int index = 0; index < structList.length; index++) {
       jSStaticFunctions[index].setValue(structList[index]);
     }
@@ -480,7 +476,7 @@ class JSClassDefinition extends Struct {
   Pointer<NativeFunction<JSObjectHasInstanceCallback>>? hasInstance;
 
   /// (JSObjectConvertToTypeCallback) The callback invoked when converting an object to a particular JavaScript type.
-  Pointer<NativeFunction<JSObjectConvertToTypeCallback>>?  convertToType;
+  Pointer<NativeFunction<JSObjectConvertToTypeCallback>>? convertToType;
 
   factory JSClassDefinition.allocate({
     required int? version,
@@ -494,19 +490,17 @@ class JSClassDefinition extends Struct {
     required Pointer<NativeFunction<JSObjectHasPropertyCallback>>? hasProperty,
     required Pointer<NativeFunction<JSObjectGetPropertyCallback>>? getProperty,
     required Pointer<NativeFunction<JSObjectSetPropertyCallback>>? setProperty,
-    required
-        Pointer<NativeFunction<JSObjectDeletePropertyCallback>>? deleteProperty,
-    required
-        Pointer<NativeFunction<JSObjectGetPropertyNamesCallback>>?
-            getPropertyNames,
-    required
-        Pointer<NativeFunction<JSObjectCallAsFunctionCallback>>? callAsFunction,
-    required
-        Pointer<NativeFunction<JSObjectCallAsConstructorCallback>>?
-            callAsConstructor,
+    required Pointer<NativeFunction<JSObjectDeletePropertyCallback>>?
+        deleteProperty,
+    required Pointer<NativeFunction<JSObjectGetPropertyNamesCallback>>?
+        getPropertyNames,
+    required Pointer<NativeFunction<JSObjectCallAsFunctionCallback>>?
+        callAsFunction,
+    required Pointer<NativeFunction<JSObjectCallAsConstructorCallback>>?
+        callAsConstructor,
     required Pointer<NativeFunction<JSObjectHasInstanceCallback>>? hasInstance,
-    required
-        Pointer<NativeFunction<JSObjectConvertToTypeCallback>>? convertToType,
+    required Pointer<NativeFunction<JSObjectConvertToTypeCallback>>?
+        convertToType,
   }) =>
       calloc<JSClassDefinition>().ref
         ..version = version ?? 0
@@ -527,7 +521,7 @@ class JSClassDefinition extends Struct {
         ..hasInstance = hasInstance ?? nullptr
         ..convertToType = convertToType ?? nullptr;
 
-  /*factory JSClassDefinition.empty() =>
+/*factory JSClassDefinition.empty() =>
       jscLib.lookup<JSClassDefinition>('kJSClassDefinitionEmpty').ref;*/
 }
 

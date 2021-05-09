@@ -519,7 +519,7 @@ class JSObject {
   /// [jsClass] A JSClass that is the class your constructor will assign to the objects its constructs. jsClass will be used to set the constructor's .prototype property, and to evaluate 'instanceof' expressions. Pass NULL to use the default object class.
   /// [callAsConstructor] A JSObjectCallAsConstructorCallback to invoke when your constructor is used in a 'new' expression. Pass NULL to use the default object constructor.
   JSObject.makeConstructor(
-      JSContext this.context,
+      this.context,
       JSClass jsClass,
       Pointer<NativeFunction<JSObjectRef.JSObjectCallAsConstructorCallback>>?
           callAsConstructor)

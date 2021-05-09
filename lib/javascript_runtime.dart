@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
+
 import 'package:flutter/foundation.dart';
 
 import 'js_eval_result.dart';
@@ -107,12 +108,13 @@ abstract class JavascriptRuntime {
       }
     }""");
     onMessage('ConsoleLog', (dynamic args) {
-      print(args[1]);
+      final list = (args as List);
+      print(list.join(', '));
     });
   }
 
   void _setupSetTimeout() {
-    final setTImeoutResult = evaluate("""
+    final setTimeoutResult = evaluate("""
       var __NATIVE_FLUTTER_JS__setTimeoutCount = -1;
       var __NATIVE_FLUTTER_JS__setTimeoutCallbacks = {};
       function setTimeout(fnTimeout, timeout) {
@@ -147,7 +149,7 @@ abstract class JavascriptRuntime {
       } on Exception catch (e) {
         print('Exception no setTimeout: $e');
       } on Error catch (e) {
-        print('Erro no setTimeout: $e');
+        print('Error no setTimeout: $e');
       }
     });
   }

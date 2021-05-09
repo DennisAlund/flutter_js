@@ -1,56 +1,35 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_js/javascript_runtime.dart';
-
 import 'package:flutter_js/javascriptcore/jscore_runtime.dart';
-//import 'package:flutter_js/quickjs-sync-server/quickjs_oasis_jsbridge.dart';
-//import 'package:flutter_js/quickjs/quickjs_runtime.dart';
-
-export './quickjs/quickjs_runtime.dart';
 
 import './quickjs/quickjs_runtime2.dart';
+import 'extension/fetch.dart';
+import 'extension/promise.dart';
+
 export './quickjs/quickjs_runtime2.dart';
-
-export './extensions/handle_promises.dart';
-export 'quickjs-sync-server/quickjs_oasis_jsbridge.dart';
-import './extensions/fetch.dart';
-import './extensions/handle_promises.dart';
-
-export 'js_eval_result.dart';
+export 'extension/promise.dart';
 export 'javascript_runtime.dart';
+export 'js_eval_result.dart';
 
 // import condicional to not import ffi libraries when using web as target
 // import "something.dart" if (dart.library.io) "other.dart";
 // REF:
 // - https://medium.com/flutter-community/conditional-imports-across-flutter-and-web-4b88885a886e
 // - https://github.com/creativecreatorormaybenot/wakelock/blob/master/wakelock/lib/wakelock.dart
-JavascriptRuntime getJavascriptRuntime(
-    {bool forceJavascriptCoreOnAndroid = false, bool xhr = true}) {
+JavascriptRuntime getJavascriptRuntime() {
   JavascriptRuntime runtime;
-  if ((Platform.isAndroid && !forceJavascriptCoreOnAndroid)) {
-    runtime = QuickJsRuntime2();
-    // FlutterJs engine = FlutterJs();
-    // runtime = QuickJsService(engine);
-  } else if (Platform.isWindows || Platform.isLinux) {
-    // runtime = FlutterJsLinuxWin()..init();
-    runtime = QuickJsRuntime2(); //('f1.js');
-    // runtime = QuickJsRuntime('f1.js');
-  } else {
+  if (Platform.isIOS || Platform.isMacOS) {
     runtime = JavascriptCoreRuntime();
+  } else {
+    runtime = QuickJsRuntime2();
   }
-  if (xhr) runtime.enableFetch();
-  runtime.enableHandlePromises();
+  runtime.enablePromise();
+  runtime.enableFetch();
   return runtime;
 }
-
-// JavascriptRuntime getJavascriptRuntime({bool xhr = true}) {
-//   JavascriptRuntime runtime = JavascriptCoreRuntime();
-//   // setFetchDebug(true);
-//   if (xhr) runtime.enableFetch();
-//   runtime.enableHandlePromises();
-//   return runtime;
-// }
 
 final Map<int?, FlutterJs> _engineMap = {};
 
@@ -84,6 +63,7 @@ class FlutterJs {
   static int? _httpPort;
 
   static int? get httpPort => _httpPort;
+
   static String? get httpPassword => _httpPassword;
 
   static var _engineCount = -1;
