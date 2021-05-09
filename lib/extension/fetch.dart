@@ -1,8 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_js/extension/promise.dart';
 import 'package:flutter_js/flutter_js.dart';
 
 const content = '''function fetch (url, options) {
+  console.log('fetch.js 创建promise')
   const promise = new Promise((resolve, reject) => {
+    console.log('fetch waiting to do', promise.id)
   })
   console.log('fetch.js', promise.id)
   sendMessage('fetch', JSON.stringify([promise.id, url, options]))
@@ -17,12 +20,14 @@ extension Promise on JavascriptRuntime {
       final url = args[1];
       final options = args[2];
       print('fetch $promiseId $url');
-      await Future.delayed(Duration(seconds: 1));
+      Dio dio = Dio();
+      final res = await dio.get(url);
+      print('fetch 结果 ${res.statusCode}');
       evaluate('''
-        PROMISE_LIST[$promiseId]
+        PROMISE_LIST[$promiseId].resolve('fetch结果')
       ''');
-      promiseQueue[promiseId]!
-          .complete(JsEvalResult('fetch string result', 'fetch raw result'));
+      // promiseQueue[promiseId]!
+      //     .complete(JsEvalResult('fetch string result', 'fetch raw result'));
     });
   }
 }

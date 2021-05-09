@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_js/flutter_js.dart';
-import 'package:flutter_js_example/ajv_example.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,9 +48,21 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
                 setState(() => _quickjsVersion = 'loading');
                 final JavascriptRuntime js = getJavascriptRuntime();
                 JsEvalResult? fetch = await js.evaluateWithAsync("""
-                fetch('https://raw.githubusercontent.com/abner/flutter_js/master/cxx/quickjs/VERSION').then(response => response.text());
+                fetch('https://www.chiphell.com/static/image/common/logo.png').then(response => response.text());
               """);
                 setState(() => _quickjsVersion = fetch?.stringResult);
+                js.dispose();
+              },
+            ),
+            Text(
+              'QuickJS Version\n${_quickjsVersion == null ? '<NULL>' : _quickjsVersion}',
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              child: Text('promise + setTimout\n看console输出'),
+              onPressed: () async {
+                final JavascriptRuntime js = getJavascriptRuntime();
                 var timeout = await js.evaluateWithAsync('''
                 new Promise((resolve)=>{
                   console.log('setTimeout start')
@@ -61,15 +70,12 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
                     console.log('setTimeout end')
                     resolve('setTimeout')
                   }, 5000)
-                })
+                }).then(val=>val).catch(reason=>reason).finally(final=>console.log(final))
                 ''');
                 print('timeout结束 ${timeout?.stringResult}');
+                js.dispose();
               },
             ),
-            Text(
-              'QuickJS Version\n${_quickjsVersion == null ? '<NULL>' : _quickjsVersion}',
-              textAlign: TextAlign.center,
-            )
           ],
         ),
       ),

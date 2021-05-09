@@ -1,33 +1,38 @@
 const PROMISE_LIST = {}
 
+// todo https://www.cnblogs.com/XieJunBao/p/9156134.html
+// todo https://segmentfault.com/a/1190000002452115
 class MyPromise extends Promise {
-  constructor (func) {
-    super((resolve, reject) => {
-      setTimeout(() => {
-        console.log('运行 func')
-        if (func) {
-          func(
-            (val) => {
-              console.log('resolve')
-              resolve(val)
-              sendMessage('PromiseEnd', JSON.stringify([this.id, val]))
-              delete PROMISE_LIST[this.id]
-            },
-            (reason) => {
-              reject(reason)
-              sendMessage('PromiseEnd', JSON.stringify([this.id, reason]))
-              delete PROMISE_LIST[this.id]
-            },
-          )
-        } else {
-          resolve()
-          sendMessage('PromiseEnd', JSON.stringify([this.id, reason]))
-          delete PROMISE_LIST[this.id]
-        }
-      }, 0)
+  constructor (executor) {
+    const id = Date.now().toString(36)
+    console.log('创建 MyPromise', id)
+    let resolve, reject
+    super((_resolve, _reject) => {
+      resolve = (val) => {
+        console.log('resolve', id)
+        _resolve(val) //执行promise._resolve
+        sendMessage('PromiseEnd', JSON.stringify([id, val]))
+        delete PROMISE_LIST[id]
+      }
+      reject = (reason) => {
+        console.log('reject', id)
+        _reject(reason) // 执行promise._reject
+        sendMessage('PromiseEnd', JSON.stringify([id, reason]))
+        delete PROMISE_LIST[id]
+      }
+      if (executor) {
+        console.log('执行 executor', id)
+        executor(
+          (val) => resolve(val),
+          (reason) => reject(reason),
+        )
+      } else {
+        resolve(null)
+      }
     })
-    this.id = Date.now().toString(36)
-    console.log('MyPromise', this.id)
+    this.resolve = resolve
+    this.reject = reject
+    this.id = id
     PROMISE_LIST[this.id] = this
     sendMessage('PromiseStart', JSON.stringify([this.id]))
   }
@@ -38,7 +43,9 @@ class MyPromise extends Promise {
       sendMessage('PromiseEnd', JSON.stringify([this.id]))
       onFinally(arguments)
     }
-    return super.finally(this._finally)
+    const _finally = super.finally(this._finally)
+    console.log('finally', _finally.id)
+    return _finally
   }
 
   then (onfulfilled, onrejected) {
@@ -47,8 +54,10 @@ class MyPromise extends Promise {
       sendMessage('PromiseEnd', JSON.stringify([this.id]))
       onfulfilled(val)
     }
-    if (onrejected) this.catch(onrejected)
-    return super.then(this._resolve, this._reject)
+    // if (onrejected) this.catch(onrejected)
+    const then = super.then(this._resolve)
+    console.log('then', then.id)
+    return then
   }
 
   catch (onrejected) {
@@ -57,7 +66,9 @@ class MyPromise extends Promise {
       sendMessage('PromiseEnd', JSON.stringify([this.id]))
       onrejected(reason)
     }
-    return super.catch(this._reject)
+    const _catch = super.catch(this._reject)
+    console.log('catch', _catch.id)
+    return _catch
   }
 
   toString () {
