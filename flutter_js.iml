@@ -7,7 +7,12 @@
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/example/android/app/src/main/java" />
+      <excludeFolder url="file://$MODULE_DIR$/example/macos/Flutter/ephemeral" />
+      <excludeFolder url="file://$MODULE_DIR$/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/.dart_tool" />
+    </content>
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
