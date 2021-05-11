@@ -25,6 +25,7 @@ JavascriptRuntime getJavascriptRuntime() {
     runtime = JavascriptCoreRuntime();
   } else {
     runtime = QuickJsRuntime2();
+    runtime.executePendingJob();
   }
   runtime.enablePromise();
   runtime.enableFetch();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_js/extension/promise.dart';
 import 'package:flutter_js/flutter_js.dart';
 
 void main() {
@@ -63,16 +64,36 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
               child: Text('promise + setTimout\n看console输出'),
               onPressed: () async {
                 final JavascriptRuntime js = getJavascriptRuntime();
-                var timeout = await js.evaluateWithAsync('''
+                JsEvalResult? timeout;
+                timeout = await js.evaluateWithAsync('''
                 new Promise((resolve)=>{
-                  console.log('setTimeout start')
-                  setTimeout(()=>{
-                    console.log('setTimeout end')
-                    resolve('setTimeout')
-                  }, 5000)
-                }).then(val=>val).catch(reason=>reason).finally(final=>console.log(final))
+                    console.log('setTimeout 1000 start')
+                      setTimeout(()=>{
+                        console.log('setTimeout end')
+                        resolve('setTimeout 1000')
+                      }, 1000)
+                    }).then(str => `then \${str}`)
                 ''');
-                print('timeout结束 ${timeout?.stringResult}');
+                print('First timeout： ${timeout?.stringResult}');
+                timeout = await js.evaluateWithAsync('''
+                Promise.all([
+                  new Promise(resolve=>{
+                    console.log('setTimeout 100 start')
+                      setTimeout(()=>{
+                        console.log('setTimeout end 100')
+                        resolve('setTimeout 100')
+                      }, 100)
+                    }),
+                  new Promise(resolve=>{
+                    console.log('setTimeout 500 start')
+                      setTimeout(()=>{
+                        console.log('setTimeout end 500')
+                        resolve('返回结果 setTimeout 500')
+                      }, 500)
+                    }),
+                ]).then(val=>val)
+                ''');
+                print('Second timeout：${timeout?.stringResult}');
                 js.dispose();
               },
             ),

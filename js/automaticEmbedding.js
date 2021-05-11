@@ -24,7 +24,8 @@ function readAndReplace (file) {
   const readFile = path.join('.', file + '.js')
   const writeFile = path.join(extensionPath, `${file}.dart`)
   console.log(`read => ${readFile} => write => ${writeFile}`)
-  const read = fs.readFileSync(readFile, 'utf-8').replace('$', '\\$')
+  const read = fs.readFileSync(readFile, 'utf-8').toString().replace(
+    /\${/g, '\\${')
   let content = fs.readFileSync(writeFile, 'utf-8')
 
   content = content.replace(
