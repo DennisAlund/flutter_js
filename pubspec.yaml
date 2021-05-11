@@ -12,8 +12,6 @@ dependencies:
   flutter:
     sdk: flutter
   ffi: ^1.0.0
-  dio: ^4.0.0
-  dio_cookie_manager: ^2.0.0
 
 dev_dependencies:
   flutter_test:

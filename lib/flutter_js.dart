@@ -19,7 +19,7 @@ export 'js_eval_result.dart';
 // REF:
 // - https://medium.com/flutter-community/conditional-imports-across-flutter-and-web-4b88885a886e
 // - https://github.com/creativecreatorormaybenot/wakelock/blob/master/wakelock/lib/wakelock.dart
-JavascriptRuntime getJavascriptRuntime() {
+JavascriptRuntime getJavascriptRuntime({Fetch? fetch}) {
   JavascriptRuntime runtime;
   if (Platform.isIOS || Platform.isMacOS) {
     runtime = JavascriptCoreRuntime();
@@ -28,7 +28,7 @@ JavascriptRuntime getJavascriptRuntime() {
     runtime.executePendingJob();
   }
   runtime.enablePromise();
-  runtime.enableFetch();
+  if (fetch != null) runtime.enableFetch(fetch);
   return runtime;
 }
 

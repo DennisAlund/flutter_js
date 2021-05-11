@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_js/extension/promise.dart';
 import 'package:flutter_js/flutter_js.dart';
@@ -47,10 +48,26 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
               child: const Text('Fetch Remote Data'),
               onPressed: () async {
                 setState(() => _quickjsVersion = 'loading');
-                final JavascriptRuntime js = getJavascriptRuntime();
-                JsEvalResult? fetch = await js.evaluateWithAsync("""
-                fetch('https://www.chiphell.com/static/image/common/logo.png').then(response => response.text());
-              """);
+                final JavascriptRuntime js = getJavascriptRuntime(
+                  fetch: (String url, Map? _options) {
+                    Options? options;
+                    if (_options != null) {
+                      options = Options(
+                        method: _options['method'] ?? 'GET',
+                        headers: _options['headers'],
+                      );
+                    }
+                    return Dio().request(
+                      url,
+                      data: _options?['data'],
+                      options: options,
+                    );
+                  },
+                );
+                JsEvalResult? fetch = await js.evaluateWithAsync('''
+                  fetch('https://m.ithome.com/api/user/userinfoget')
+              ''');
+                print('fetch结果 ${fetch?.stringResult}');
                 setState(() => _quickjsVersion = fetch?.stringResult);
                 js.dispose();
               },

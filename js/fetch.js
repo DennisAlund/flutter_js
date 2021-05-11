@@ -1,9 +1,10 @@
 function fetch (url, options) {
-  console.log('fetch.js 创建promise')
-  const promise = new Promise((resolve, reject) => {
-    console.log('fetch waiting to do', promise.id)
+  const promise = new MyPromise((_resolve, _reject) => {
+    promise.resolve = _resolve
+    promise.reject = _reject
+    console.log('执行fetch的promise')
   })
-  console.log('fetch.js', promise.id)
+  console.log('fetch.js 创建promise id:', promise.id)
   sendMessage('fetch', JSON.stringify([promise.id, url, options]))
   return promise
 }

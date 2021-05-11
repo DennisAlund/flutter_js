@@ -6,15 +6,30 @@ final Map<String, Completer<JsEvalResult?>> promiseQueue = {};
 
 const content = '''const PROMISE_MAP = {}
 
+const Characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+const CharactersLength = Characters.length
+
+function randomCharacters (length = 6) {
+  const result = []
+  for (var i = 0; i < length; i++) {
+    result.push(Characters.charAt(Math.floor(Math.random() *
+      CharactersLength)))
+  }
+  return result.join('')
+}
+
 class MyPromise extends Promise {
   constructor (Fn) {
-    const id = Date.now().toString(36)
+    const id = randomCharacters()
+    console.log('创建Promise', id)
     super(Fn)
     this.id = id
     PROMISE_MAP[id] = this
+    sendMessage('PromiseStart', JSON.stringify([id]))
   }
 
   toString () {
+    // console.log('Promise.toString', this.id)
     return `Promise:\${this.id}`
   }
 }
@@ -36,7 +51,19 @@ extension Promise on JavascriptRuntime {
       if (completer?.isCompleted == false) {
         print('结束Completer $promiseId');
         completer!.complete(JsEvalResult(
-          args[1].toString(),
+          args[1]?.toString() ?? 'null',
+          args[1],
+        ));
+      }
+    });
+    this.onMessage('PromiseError', (dynamic args) {
+      final promiseId = args[0];
+      print('PromiseError $args');
+      late Completer? completer = promiseQueue.remove(promiseId);
+      if (completer?.isCompleted == false) {
+        print('结束Completer $promiseId');
+        completer!.completeError(JsEvalResult(
+          args[1]?.toString() ?? 'null',
           args[1],
         ));
       }
@@ -47,27 +74,23 @@ extension Promise on JavascriptRuntime {
     final JsEvalResult res = evaluate(code);
     print('evaluateWithAsync: ${res.stringResult}');
     if (res.stringResult.startsWith('Promise:')) {
-      // For Javascript Core at the iOS and macOS systems
+      // 获取Promise id
       final promiseId = res.stringResult.split(':').last;
       print('Promise id: $promiseId');
-      final Completer<JsEvalResult?> completer = Completer();
-      promiseQueue[promiseId] = completer;
+      final Completer<JsEvalResult?> completer =
+          promiseQueue[promiseId] = Completer();
       evaluate('''
       PROMISE_MAP['$promiseId'].then(val=>{
-        sendMessage('PromiseEnd',JSON.stringify(['$promiseId', val]))
+        console.log('promise.dart then $promiseId', val)
+        sendMessage('PromiseEnd', JSON.stringify(['$promiseId', val]))
         return val
+      }).catch(e=>{
+        console.log('promise.dart catch $promiseId', e)
+        sendMessage('PromiseError', JSON.stringify(['$promiseId', e]))
+        return e
       })
       ''');
       return completer.future;
-    } else if (res.rawResult is Future) {
-      // For the QuickJS
-      print('is future');
-      executePendingJob();
-      final Future future = res.rawResult as Future;
-      return future.then((value) {
-        print('future 完成了');
-        return JsEvalResult(value.toString(), value);
-      });
     }
     return Future.value(null);
   }
