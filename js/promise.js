@@ -20,6 +20,8 @@ class MyPromise extends Promise {
     this.id = id
     PROMISE_MAP[id] = this
     sendMessage('PromiseStart', JSON.stringify([id]))
+    this.resolve = null
+    this.reject = null
   }
 
   toString () {

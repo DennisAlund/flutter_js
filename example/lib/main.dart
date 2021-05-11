@@ -49,7 +49,7 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
               onPressed: () async {
                 setState(() => _quickjsVersion = 'loading');
                 final JavascriptRuntime js = getJavascriptRuntime(
-                  fetch: (String url, Map? _options) {
+                  fetch: (String url, Map? _options) async {
                     Options? options;
                     if (_options != null) {
                       options = Options(
@@ -57,15 +57,23 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
                         headers: _options['headers'],
                       );
                     }
-                    return Dio().request(
+                    final res = await Dio().request(
                       url,
                       data: _options?['data'],
                       options: options,
                     );
+                    return FetchResponse(
+                      url: res.realUri.toString(),
+                      headers: res.headers.map,
+                      status: res.statusCode ?? 200,
+                      statusText: res.statusMessage ?? 'ok',
+                      body: res.data,
+                      redirected: res.isRedirect ?? false,
+                    );
                   },
                 );
                 JsEvalResult? fetch = await js.evaluateWithAsync('''
-                  fetch('https://m.ithome.com/api/user/userinfoget')
+                  fetch('https://m.ithome.com/api/user/userinfoget').then(res=>`then \${JSON.stringify(res.body)}`)
               ''');
                 print('fetch结果 ${fetch?.stringResult}');
                 setState(() => _quickjsVersion = fetch?.stringResult);
@@ -91,7 +99,7 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
                       }, 1000)
                     }).then(str => `then \${str}`)
                 ''');
-                print('First timeout： ${timeout?.stringResult}');
+                print('First timeout: ${timeout?.stringResult}');
                 timeout = await js.evaluateWithAsync('''
                 Promise.all([
                   new Promise(resolve=>{
@@ -110,7 +118,7 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
                     }),
                 ]).then(val=>val)
                 ''');
-                print('Second timeout：${timeout?.stringResult}');
+                print('Second timeout: ${timeout?.stringResult}');
                 js.dispose();
               },
             ),

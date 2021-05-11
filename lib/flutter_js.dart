@@ -10,7 +10,8 @@ import 'extension/fetch.dart';
 import 'extension/promise.dart';
 
 export './quickjs/quickjs_runtime2.dart';
-export 'extension/promise.dart';
+export 'extension/promise.dart' hide content;
+export 'extension/fetch.dart' hide content;
 export 'javascript_runtime.dart';
 export 'js_eval_result.dart';
 
