@@ -4,8 +4,7 @@
 
 改动:
 
-1. 开发了新的 [evaluateWithAsync](/lib/extension/promise.dart#L46) 方法代替原来的 evaluateAsync
-   + [handlePromise](https://github.com/abner/flutter_js/blob/0dbf4138da63d1cfdd5ad4d53b9bdd974c4dfcfd/lib/extensions/handle_promises.dart#L96)
+1. 开发了新的 [evaluateWithAsync](/lib/extension/promise.dart#L46) 方法代替原来的 evaluateAsync + [handlePromise](https://github.com/abner/flutter_js/blob/0dbf4138da63d1cfdd5ad4d53b9bdd974c4dfcfd/lib/extensions/handle_promises.dart#L96)
    组合方法；
 1. 创建QuickJS后自动执行`dispatch()`建立事件循环，[代码文件](./lib/flutter_js.dart#L28)
    ，[dispatch的说明](https://github.com/ekibun/flutter_qjs/blob/master/README-CN.md#%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8)
