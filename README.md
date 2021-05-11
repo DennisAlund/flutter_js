@@ -20,4 +20,4 @@
 
     * js代码自动写入到dart文件避免异步读取资源文件；
     * 自动写入服务使用Node.js实现，不改动这两个js文件的话不需要安装和运行Node.js；
-1. 精简了example mian.dart的代码只保留Promise相关例子代码，更多使用例子请浏览原仓库的example；
+1. example只保留Promise相关例子代码，其它使用范例请浏览原仓库的example；
