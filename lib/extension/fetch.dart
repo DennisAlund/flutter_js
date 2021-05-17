@@ -64,7 +64,7 @@ extension FetchExtension on JavascriptRuntime {
       print('fetch $promiseId $url');
       try {
         final res = await fetch(url, options);
-        print('fetch $promiseId 结果 ${res.toJson()}');
+        // print('fetch $promiseId 结果 ${res.toJson()}');
         evaluate('''
         PROMISE_MAP['$promiseId'].resolve(${jsonEncode(res.toJson())})
       ''');
