@@ -71,7 +71,7 @@ extension FetchExtension on JavascriptRuntime {
       } catch (e) {
         // print('fetch $promiseId 错误 $e');
         evaluate('''
-        PROMISE_MAP['$promiseId'].reject('hi')
+        PROMISE_MAP['$promiseId'].reject(`${e.toString()}`)
       ''');
       }
     });
