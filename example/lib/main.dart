@@ -73,7 +73,10 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
                   },
                 );
                 JsEvalResult? fetch = await js.evaluateWithAsync('''
-                  fetch('https://m.ithome.com/api/user/userinfoget').then(res=>`then \${JSON.stringify(res.body)}`)
+                async function a(){
+                  return Promise.resolve('hi')
+                }
+                a().then(str=>'1 '+str).then(str=>`2 \${str}`)
               ''');
                 print('fetch结果 ${fetch?.stringResult}');
                 setState(() => _quickjsVersion = fetch?.stringResult);

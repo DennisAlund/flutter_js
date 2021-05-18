@@ -13,21 +13,27 @@ function randomCharacters (length = 6) {
 }
 
 class MyPromise extends Promise {
-  constructor (Fn) {
+  constructor (...args) {
     const id = randomCharacters()
     console.log('创建Promise', id)
-    super(Fn)
+    super(...args)
     this.id = id
     PROMISE_MAP[id] = this
     sendMessage('PromiseStart', JSON.stringify([id]))
     this.resolve = null
     this.reject = null
   }
-
-  toString () {
-    // console.log('Promise.toString', this.id)
-    return `Promise:${this.id}`
-  }
 }
 
+Promise.prototype.toString = function () {
+  if (!this.id) {
+    this.id = randomCharacters()
+    PROMISE_MAP[this.id] = this
+    sendMessage('PromiseStart', JSON.stringify([this.id]))
+    this.resolve = null
+    this.reject = null
+  }
+  console.log('Promise.toString', this.id)
+  return `Promise:${this.id}`
+}
 Promise = MyPromise
