@@ -36,4 +36,5 @@ Promise.prototype.toString = function () {
   // console.log('Promise.toString', this.id)
   return `Promise:${this.id}`
 }
-Promise = MyPromise
+
+globalThis.Promise = Promise = MyPromise

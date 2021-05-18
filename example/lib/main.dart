@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_js/extension/promise.dart';
 import 'package:flutter_js/flutter_js.dart';
+import 'package:get/get.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +20,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       home: FlutterJsHomeScreen(),
     );
   }
@@ -30,7 +32,6 @@ class FlutterJsHomeScreen extends StatefulWidget {
 }
 
 class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
-  String _jsResult = '';
 
   String? _quickjsVersion;
 
@@ -123,6 +124,27 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
                 ''');
                 print('Second timeout: ${timeout?.stringResult}');
                 js.dispose();
+              },
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              child: Text('sendMessage with Promise'),
+              onPressed: () async {
+                final js = getJavascriptRuntime();
+                js.onMessage('alert', (args) async {
+                  final promiseId = args[0];
+                  final text = args[1];
+                  print('alert promise.id $promiseId');
+                  await Get.dialog(AlertDialog(
+                    title: Text('Alert: $text'),
+                  ));
+                  js.evaluate('''PROMISE_MAP['$promiseId'].resolve()''');
+                });
+                await js.evaluateWithAsync(await rootBundle.loadString(
+                  'assets/alert.js',
+                  cache: false,
+                ));
+                print('alert.js 结束');
               },
             ),
           ],
