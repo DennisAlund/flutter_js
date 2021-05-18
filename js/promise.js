@@ -15,7 +15,7 @@ function randomCharacters (length = 6) {
 class MyPromise extends Promise {
   constructor (...args) {
     const id = randomCharacters()
-    console.log('创建Promise', id)
+    // console.log('创建Promise', id)
     super(...args)
     this.id = id
     PROMISE_MAP[id] = this
@@ -33,7 +33,7 @@ Promise.prototype.toString = function () {
     this.resolve = null
     this.reject = null
   }
-  console.log('Promise.toString', this.id)
+  // console.log('Promise.toString', this.id)
   return `Promise:${this.id}`
 }
 Promise = MyPromise
