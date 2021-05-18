@@ -45,7 +45,7 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-              child: const Text('Fetch Remote Data'),
+              child: const Text('Promise chain'),
               onPressed: () async {
                 setState(() => _quickjsVersion = 'loading');
                 final JavascriptRuntime js = getJavascriptRuntime(
@@ -76,7 +76,7 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
                 async function a(){
                   return Promise.resolve('hi')
                 }
-                a().then(str=>'1 '+str).then(str=>`2 \${str}`)
+                a().then(str=>'1 '+str).then(str=>`2 \${str}`).then(str=>`3 \${str}`)
               ''');
                 print('fetch结果 ${fetch?.stringResult}');
                 setState(() => _quickjsVersion = fetch?.stringResult);
@@ -89,7 +89,7 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
             ),
             SizedBox(height: 10),
             ElevatedButton(
-              child: Text('promise + setTimout\n看console输出'),
+              child: Text('Promise.all + setTimout\n看console输出'),
               onPressed: () async {
                 final JavascriptRuntime js = getJavascriptRuntime();
                 JsEvalResult? timeout;
