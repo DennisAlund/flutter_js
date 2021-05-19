@@ -12,9 +12,9 @@ function alert (index) {
   return promise
 }
 
-async function a () {
-  await alert(1)
-  await alert(2)
+function a () {
+  return alert(1)
+  // await alert(2)
 }
 
 a()
