@@ -29,7 +29,7 @@ class FetchResponse {
   final String url;
   final dynamic body;
   final int status;
-  final String statusText;
+  final String? statusText;
 
   FetchResponse({
     this.request,
