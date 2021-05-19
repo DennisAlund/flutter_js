@@ -96,8 +96,8 @@ extension Promise on JavascriptRuntime {
         sendMessage('PromiseEnd', JSON.stringify(['$promiseId', val]))
         return val
       }).catch(e=>{
-        console.log('promise.dart catch $promiseId', e)
-        sendMessage('PromiseError', JSON.stringify(['$promiseId', e]))
+        console.log('promise.dart error $promiseId', `e.toString()`)
+        sendMessage('PromiseError', JSON.stringify(['$promiseId', `e.toString()`]))
         return e
       })
       ''');
