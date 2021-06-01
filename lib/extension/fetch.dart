@@ -32,13 +32,13 @@ class FetchResponse {
   final String? statusText;
 
   FetchResponse({
-    this.request,
     required this.headers,
     required this.redirected,
     required this.url,
     required this.body,
     required this.status,
     required this.statusText,
+    this.request,
   });
 
   bool get ok => status >= 200 && status <= 299;
@@ -50,6 +50,8 @@ class FetchResponse {
       'url': url,
       'headers': headers,
       'body': body,
+      'redirected': redirected,
+      'request': request,
     };
   }
 }
