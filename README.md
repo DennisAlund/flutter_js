@@ -23,6 +23,6 @@
 
 ### 0604更新
 
-新增fetch的使用例子，通过response的content-type识别网络请求返回的内容类型，[代码文件](example/lib/main.dart#L110)；
+新增fetch的使用例子，通过response的content-type识别网络请求返回的内容类型，[代码文件](example/lib/main.dart#L74)；
 
 ⚠️ 请注意，flutter_js内的js运行环境没有Image、FileReader等功能
