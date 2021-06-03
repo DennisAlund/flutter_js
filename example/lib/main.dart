@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:ui';
+
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/services.dart';
 import 'package:flutter_js/extension/promise.dart';
 import 'package:flutter_js/flutter_js.dart';
 import 'package:get/get.dart';
+import 'dart:ui' as ui;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +36,6 @@ class FlutterJsHomeScreen extends StatefulWidget {
 }
 
 class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
-
   String? _quickjsVersion;
 
   @override
@@ -49,30 +52,7 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
               child: const Text('Promise chain'),
               onPressed: () async {
                 setState(() => _quickjsVersion = 'loading');
-                final JavascriptRuntime js = getJavascriptRuntime(
-                  fetch: (String url, Map? _options) async {
-                    Options? options;
-                    if (_options != null) {
-                      options = Options(
-                        method: _options['method'] ?? 'GET',
-                        headers: _options['headers'],
-                      );
-                    }
-                    final res = await Dio().request(
-                      url,
-                      data: _options?['data'],
-                      options: options,
-                    );
-                    return FetchResponse(
-                      url: res.realUri.toString(),
-                      headers: res.headers.map,
-                      status: res.statusCode ?? 200,
-                      statusText: res.statusMessage ?? 'ok',
-                      body: res.data,
-                      redirected: res.isRedirect ?? false,
-                    );
-                  },
-                );
+                final JavascriptRuntime js = getJavascriptRuntime();
                 JsEvalResult? fetch = await js.evaluateWithAsync('''
                 async function a(){
                   return Promise.resolve('hi')
@@ -85,9 +65,69 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
               },
             ),
             Text(
-              'QuickJS Version\n${_quickjsVersion == null ? '<NULL>' : _quickjsVersion}',
+              'QuickJS Version\n${_quickjsVersion == null
+                  ? '<NULL>'
+                  : _quickjsVersion}',
               textAlign: TextAlign.center,
             ),
+            SizedBox(height: 10),
+            ElevatedButton(
+                child: Text('fetch'),
+                onPressed: () async {
+                  final js = getJavascriptRuntime(
+                    fetch: (String url, Map? _options) async {
+                      Options options = Options(
+                        method: _options?['method'] ?? 'GET',
+                        headers: _options?['headers'],
+                        responseType: ResponseType.bytes,
+                      );
+                      final res = await Dio().request(
+                        url,
+                        data: _options?['data'],
+                        options: options,
+                      );
+                      final contentType =
+                      res.headers.value(Headers.contentTypeHeader);
+                      print('contentType $contentType');
+                      dynamic body = res.data;
+                      if (contentType?.startsWith('text/') == true ||
+                          contentType?.endsWith('/json') == true ||
+                          contentType?.endsWith('/xml') == true) {
+                        // 文本
+                        body = utf8.decode(res.data);
+                      }
+                      else if (contentType?.startsWith('image/') == true) {
+                        // 图片
+                        final codec = await ui.instantiateImageCodec(res.data);
+                        FrameInfo fi = await codec.getNextFrame();
+                        body = {
+                          'type': 'image',
+                          'width': fi.image.width,
+                          'height': fi.image.height,
+                          'content': res.data,
+                        };
+                      } else {
+                        body = {'type': 'binary', 'content': res.data};
+                      }
+                      return FetchResponse(
+                        url: res.realUri.toString(),
+                        headers: res.headers.map,
+                        status: res.statusCode ?? 200,
+                        statusText: res.statusMessage ?? 'ok',
+                        body: body,
+                        redirected: res.isRedirect ?? false,
+                      );
+                    },
+                  );
+                  js.evaluate('''
+                    fetch('https://www.chiphell.com/static/image/common/logo.png')
+                    .then(res=>{
+                      console.log('图片', res)
+                    })
+                    // .then(()=>fetch('http://lkong.cn/index.php?mod=data&sars=thread/2819293'))
+                    // .then(res=>console.log('json',res.body))
+                  ''');
+                }),
             SizedBox(height: 10),
             ElevatedButton(
               child: Text('Promise.all + setTimout\n看console输出'),
