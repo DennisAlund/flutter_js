@@ -52,12 +52,12 @@ extension Promise on JavascriptRuntime {
     evaluate(content);
     this.onMessage('PromiseStart', (dynamic args) {
       final promiseId = args[0];
-      print('PromiseStart $promiseId');
+      // print('PromiseStart $promiseId');
       promiseQueue[promiseId] = Completer();
     });
     this.onMessage('PromiseEnd', (dynamic args) {
       final promiseId = args[0];
-      print('PromiseEnd $args');
+      // print('PromiseEnd $args');
       late Completer? completer = promiseQueue.remove(promiseId);
       if (completer?.isCompleted == false) {
         print('结束Completer $promiseId');
@@ -69,7 +69,7 @@ extension Promise on JavascriptRuntime {
     });
     this.onMessage('PromiseError', (dynamic args) {
       final promiseId = args[0];
-      print('PromiseError $args');
+      // print('PromiseError $args');
       late Completer? completer = promiseQueue.remove(promiseId);
       if (completer?.isCompleted == false) {
         print('结束Completer $promiseId');
@@ -92,11 +92,11 @@ extension Promise on JavascriptRuntime {
           promiseQueue[promiseId] = Completer();
       evaluate('''
       PROMISE_MAP['$promiseId'].then(val=>{
-        console.log('promise.dart then $promiseId', val)
+        // console.log('promise.dart then $promiseId', val)
         sendMessage('PromiseEnd', JSON.stringify(['$promiseId', val]))
         return val
       }).catch(e=>{
-        console.log('promise.dart error $promiseId', `\${e.toString()}`)
+        // console.log('promise.dart error $promiseId', `\${e.toString()}`)
         sendMessage('PromiseError', JSON.stringify(['$promiseId', `\${e.toString()}`]))
         return e
       })
