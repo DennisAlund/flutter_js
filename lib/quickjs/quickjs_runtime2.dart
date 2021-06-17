@@ -214,7 +214,7 @@ class QuickJsRuntime2 extends JavascriptRuntime {
 
   @override
   int executePendingJob() {
-    this.dispatch();
+    _executePendingJob();
     return 0;
   }
 

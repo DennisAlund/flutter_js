@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_js/flutter_js.dart';
-import 'package:flutter_js/utils/randomStr.dart';
 
 final Map<String, Completer<JsEvalResult?>> promiseQueue = {};
 

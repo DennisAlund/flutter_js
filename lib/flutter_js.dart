@@ -1,26 +1,24 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/services.dart';
 import 'package:flutter_js/javascript_runtime.dart';
+
 import 'package:flutter_js/javascriptcore/jscore_runtime.dart';
 
+export './quickjs/quickjs_runtime.dart';
+
 import './quickjs/quickjs_runtime2.dart';
-import 'extension/fetch.dart';
-import 'extension/promise.dart';
-
 export './quickjs/quickjs_runtime2.dart';
-export 'extension/promise.dart' hide content;
-export 'extension/fetch.dart' hide content;
-export 'javascript_runtime.dart';
-export 'js_eval_result.dart';
 
-// import condicional to not import ffi libraries when using web as target
-// import "something.dart" if (dart.library.io) "other.dart";
-// REF:
-// - https://medium.com/flutter-community/conditional-imports-across-flutter-and-web-4b88885a886e
-// - https://github.com/creativecreatorormaybenot/wakelock/blob/master/wakelock/lib/wakelock.dart
-JavascriptRuntime getJavascriptRuntime({Fetch? fetch}) {
+export 'js_eval_result.dart';
+export 'javascript_runtime.dart';
+
+import './extension/promise.dart';
+import './extension/fetch.dart';
+export 'extension/fetch.dart' hide content;
+
+JavascriptRuntime getJavascriptRuntime({Fetch? fetch
+}) {
   JavascriptRuntime runtime;
   if (Platform.isIOS || Platform.isMacOS) {
     runtime = JavascriptCoreRuntime();
@@ -65,7 +63,6 @@ class FlutterJs {
   static int? _httpPort;
 
   static int? get httpPort => _httpPort;
-
   static String? get httpPassword => _httpPassword;
 
   static var _engineCount = -1;

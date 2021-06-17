@@ -168,7 +168,7 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
             ),
             SizedBox(height: 10),
             ElevatedButton(
-              child: Text('sendMessage with Promise'),
+              child: Text('Alert + Promise'),
               onPressed: () async {
                 final js = getJavascriptRuntime();
                 js.onMessage('alert', (args) async {

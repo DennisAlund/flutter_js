@@ -1,17 +1,18 @@
 name: flutter_js
-description: A Javascript engine to use with flutter.
+description: A Javascript engine to use with flutter. 
   It uses Quickjs on Android and JavascriptCore on IOS
-version: 0.4.0+6
+version: 0.5.0+0
 homepage: https://github.com/gzlock/flutter_js
 repository: https://github.com/gzlock/flutter_js
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
-  flutter: ">=1.10.0"
+  flutter: ">=2.2.0"
+
 dependencies:
   flutter:
     sdk: flutter
-  ffi: ^1.0.0
+  ffi: "^1.0.0"
 
 dev_dependencies:
   flutter_test:
@@ -34,10 +35,3 @@ flutter:
       #   default_package: flutter_js_linux_windows
       windows:
         pluginClass: FlutterJsPlugin
-
-
-  assets:
-    - assets/
-
-
-

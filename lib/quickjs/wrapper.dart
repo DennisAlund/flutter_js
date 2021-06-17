@@ -183,41 +183,29 @@ dynamic _jsToDart(Pointer<JSContext> ctx, Pointer<JSValue> val,
         jsFreeValue(ctx, pstack);
         return JSError(err, stack);
       } else if (jsIsPromise(ctx, val) != 0) {
+        final jsPromiseThen = _jsGetPropertyValue(ctx, val, 'then');
+        final _JSFunction promiseThen =
+            _jsToDart(ctx, jsPromiseThen, cache: cache);
+        jsFreeValue(ctx, jsPromiseThen);
+        final completer = Completer();
+        completer.future.catchError((e) {});
         final jsPromise = _JSObject(ctx, val);
-        final jsPromiseToString = _jsGetPropertyValue(ctx, val, 'toString');
-        final _JSFunction toString =
-            _jsToDart(ctx, jsPromiseToString, cache: cache);
-        jsFreeValue(ctx, jsPromiseToString);
-        final str = toString.invoke([], jsPromise);
-        // print('toString $str');
-        // jsPromise.free();
-        // toString.free();
-        return str;
-
-        // final jsPromise = _JSObject(ctx, val);
-        // final jsPromiseThen = _jsGetPropertyValue(ctx, val, 'then');
-        // final _JSFunction promiseThen =
-        //     _jsToDart(ctx, jsPromiseThen, cache: cache);
-        // jsFreeValue(ctx, jsPromiseThen);
-        // final completer = Completer();
-        // completer.future.catchError((e) {});
-        // final jsRet = promiseThen._invoke([
-        //   (v) {
-        //     JSRef.dupRecursive(v);
-        //     print('wrapper.drat promise then');
-        //     if (!completer.isCompleted) completer.complete(v);
-        //   },
-        //   (e) {
-        //     JSRef.dupRecursive(e);
-        //     if (!completer.isCompleted) completer.completeError(e);
-        //   },
-        // ], jsPromise);
-        // jsPromise.free();
-        // promiseThen.free();
-        // final isException = jsIsException(jsRet) != 0;
-        // jsFreeValue(ctx, jsRet);
-        // if (isException) throw _parseJSException(ctx);
-        // return completer.future;
+        final jsRet = promiseThen._invoke([
+          (v) {
+            JSRef.dupRecursive(v);
+            if (!completer.isCompleted) completer.complete(v);
+          },
+          (e) {
+            JSRef.dupRecursive(e);
+            if (!completer.isCompleted) completer.completeError(e);
+          },
+        ], jsPromise);
+        jsPromise.free();
+        promiseThen.free();
+        final isException = jsIsException(jsRet) != 0;
+        jsFreeValue(ctx, jsRet);
+        if (isException) throw _parseJSException(ctx);
+        return completer.future;
       } else if (jsIsArray(ctx, val) != 0) {
         final jslength = _jsGetPropertyValue(ctx, val, 'length');
         final length = jsToInt64(ctx, jslength);
