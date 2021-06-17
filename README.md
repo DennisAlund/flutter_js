@@ -4,14 +4,14 @@
 
 改动:
 
-1. 开发了新的 [evaluateWithAsync](/lib/extension/promise.dart#L46) 方法代替原来的 evaluateAsync + [handlePromise](https://github.com/abner/flutter_js/blob/0dbf4138da63d1cfdd5ad4d53b9bdd974c4dfcfd/lib/extensions/handle_promises.dart#L96)
+1. 开发了新的 [evaluateWithAsync](/lib/extension/promise.dart#L46) 方法代替原来的 evaluateAsync + [handlePromise](https://github.com/abner/flutter_js/blob/0dbf4138da63d1cfdd5ad4d53b9bdd974c4dfcfd/lib/extensions/handle_promises.dart)
       组合方法；
 1. 创建QuickJS后自动执行`dispatch()`建立事件循环，[代码文件](./lib/flutter_js.dart#L28)
    ，[dispatch的说明](https://github.com/ekibun/flutter_qjs/blob/master/README-CN.md#%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8)
 1. 第一点和第二点结合起来解决了：原 flutter_js
-   的 [handlerPromise方法](https://github.com/abner/flutter_js/blob/0dbf4138da63d1cfdd5ad4d53b9bdd974c4dfcfd/example/lib/main.dart#L128)
+   的 [handlerPromise方法](https://github.com/abner/flutter_js/blob/0dbf4138da63d1cfdd5ad4d53b9bdd974c4dfcfd/example/lib/main.dart)
    每次都要调用一次`dispatch()`导致抛出`Bad state: Stream has already been listened to`错误的问题，从此忘了`handlePromise()`吧；
-1. 修复了js的`console.log('第一', '第二', '第三')`只能在dart console输出第一个参数的问题，[代码文件](./lib/javascript_runtime.dart#L110)；
+1. 修复了js的`console.log('第一', '第二', '第三')`只能在dart console输出第一个参数的问题，[代码文件](./lib/javascript_runtime.dart)；
 1. 删除了 XMLHttpRequest、fetch、Promise js和dart相关的实现代码；
 1. 重写了JavaScriptCore和QuickJS的Promise机制，更精简更高效；
 1. fetch和promise的js代码在js文件编写，再写了个服务自动写入到promise.dart和fetch.dart
@@ -22,6 +22,6 @@
 
 ### 0604更新
 
-新增fetch的使用例子，通过response的content-type识别网络请求返回的内容类型，[代码文件](example/lib/main.dart#L74)；
+新增fetch的使用例子，通过response的content-type识别网络请求返回的内容类型，[代码文件](example/lib/main.dart)；
 
 ⚠️ 请注意，flutter_js内的js运行环境没有Image、FileReader等功能

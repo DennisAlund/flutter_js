@@ -1,3 +1,7 @@
+# 0.5.0+0
+
+- Fixes issue relative to build on Dart 2.13 (issues #41 and #42)
+
 # 0.4.0+6
 
 - Fix executePendingJobs (wasn't dispatching in the most current version)
