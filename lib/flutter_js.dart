@@ -14,6 +14,7 @@ export 'js_eval_result.dart';
 export 'javascript_runtime.dart';
 
 import './extension/promise.dart';
+export 'extension/promise.dart' hide content;
 import './extension/fetch.dart';
 export 'extension/fetch.dart' hide content;
 
