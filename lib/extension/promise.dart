@@ -82,7 +82,7 @@ extension Promise on JavascriptRuntime {
 
   Future<JsEvalResult?> evaluateWithAsync(code) {
     final JsEvalResult res = evaluate(code);
-    print('evaluateWithAsync: ${res.stringResult}');
+    print('evaluateWithAsync: ${res.rawResult}');
     if (res.stringResult.startsWith('Promise:')) {
       // 获取Promise id
       final promiseId = res.stringResult.split(':').last;
