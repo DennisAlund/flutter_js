@@ -102,6 +102,6 @@ extension Promise on JavascriptRuntime {
       ''');
       return completer.future;
     }
-    return Future.value(null);
+    return Future.value(res.rawResult);
   }
 }
