@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart' hide Image;
@@ -7,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_js/extension/promise.dart';
 import 'package:flutter_js/flutter_js.dart';
 import 'package:get/get.dart';
-import 'dart:ui' as ui;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,9 +65,7 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
               },
             ),
             Text(
-              'QuickJS Version\n${_quickjsVersion == null
-                  ? '<NULL>'
-                  : _quickjsVersion}',
+              'QuickJS Version\n${_quickjsVersion == null ? '<NULL>' : _quickjsVersion}',
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
@@ -87,7 +85,7 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
                         options: options,
                       );
                       final contentType =
-                      res.headers.value(Headers.contentTypeHeader);
+                          res.headers.value(Headers.contentTypeHeader);
                       print('contentType $contentType');
                       dynamic body = res.data;
                       if (contentType?.startsWith('text/') == true ||
@@ -95,8 +93,7 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
                           contentType?.endsWith('/xml') == true) {
                         // 文本
                         body = utf8.decode(res.data);
-                      }
-                      else if (contentType?.startsWith('image/') == true) {
+                      } else if (contentType?.startsWith('image/') == true) {
                         // 图片
                         final codec = await ui.instantiateImageCodec(res.data);
                         FrameInfo fi = await codec.getNextFrame();
@@ -185,6 +182,18 @@ class _FlutterJsHomeScreenState extends State<FlutterJsHomeScreen> {
                   cache: false,
                 ));
                 print('alert.js 结束');
+              },
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              child: Text('evaluateWithAsync with not promise'),
+              onPressed: () async {
+                final js = getJavascriptRuntime();
+                js.evaluate('''
+                  const A = ({lou:t,author:e})=>({title:`回复第\${t}楼：\${e}`,type:"html",content:"<h1>回复表单</h1>"})
+                ''');
+                final res = await js.evaluateWithAsync('A({lou:1,author:2})');
+                print('结果 ${js.convertValue(res!)}');
               },
             ),
           ],
